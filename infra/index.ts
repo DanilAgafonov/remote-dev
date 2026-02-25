@@ -98,7 +98,7 @@ const ami = aws.ec2.getAmiOutput({
   owners: ["427812963091"],
   filters: [
     { name: "architecture", values: ["arm64"] },
-    { name: "name", values: ["NixOS-*"] },
+    { name: "name", values: ["nixos/25.11.*-aarch64-linux"] },
   ],
   mostRecent: true,
 });
