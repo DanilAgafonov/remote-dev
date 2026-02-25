@@ -1,0 +1,127 @@
+import * as aws from "@pulumi/aws";
+import * as pulumi from "@pulumi/pulumi";
+
+const config = new pulumi.Config();
+const instanceType = config.get("instanceType") ?? "m8g.xlarge";
+const volumeSize = config.getNumber("volumeSize") ?? 100;
+
+const defaultTags: Record<string, string> = {
+  "do-not-nuke": "true",
+  Project: "remote-dev",
+  Owner: "dagafonov",
+};
+
+// --- VPC + Networking ---
+
+const vpc = new aws.ec2.Vpc("dagafonov-remote-dev-vpc", {
+  cidrBlock: "10.0.0.0/16",
+  enableDnsSupport: true,
+  enableDnsHostnames: true,
+  tags: { ...defaultTags, Name: "dagafonov-remote-dev-vpc" },
+});
+
+const igw = new aws.ec2.InternetGateway("dagafonov-remote-dev-igw", {
+  vpcId: vpc.id,
+  tags: { ...defaultTags, Name: "dagafonov-remote-dev-igw" },
+});
+
+const subnet = new aws.ec2.Subnet("dagafonov-remote-dev-subnet", {
+  vpcId: vpc.id,
+  cidrBlock: "10.0.1.0/24",
+  mapPublicIpOnLaunch: true,
+  tags: { ...defaultTags, Name: "dagafonov-remote-dev-subnet" },
+});
+
+const routeTable = new aws.ec2.RouteTable("dagafonov-remote-dev-rt", {
+  vpcId: vpc.id,
+  routes: [{ cidrBlock: "0.0.0.0/0", gatewayId: igw.id }],
+  tags: { ...defaultTags, Name: "dagafonov-remote-dev-rt" },
+});
+
+new aws.ec2.RouteTableAssociation("dagafonov-remote-dev-rta", {
+  subnetId: subnet.id,
+  routeTableId: routeTable.id,
+});
+
+// --- Security Group ---
+
+const sg = new aws.ec2.SecurityGroup("dagafonov-remote-dev-sg", {
+  vpcId: vpc.id,
+  description: "Remote dev - no inbound, all outbound",
+  egress: [
+    {
+      protocol: "-1",
+      fromPort: 0,
+      toPort: 0,
+      cidrBlocks: ["0.0.0.0/0"],
+    },
+  ],
+  tags: { ...defaultTags, Name: "dagafonov-remote-dev-sg" },
+});
+
+// --- IAM Role for SSM ---
+
+const role = new aws.iam.Role("dagafonov-remote-dev-role", {
+  assumeRolePolicy: JSON.stringify({
+    Version: "2012-10-17",
+    Statement: [
+      {
+        Action: "sts:AssumeRole",
+        Effect: "Allow",
+        Principal: { Service: "ec2.amazonaws.com" },
+      },
+    ],
+  }),
+  tags: defaultTags,
+});
+
+new aws.iam.RolePolicyAttachment("dagafonov-remote-dev-ssm-policy", {
+  role: role.name,
+  policyArn: "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore",
+});
+
+const instanceProfile = new aws.iam.InstanceProfile(
+  "dagafonov-remote-dev-instance-profile",
+  {
+    role: role.name,
+    tags: defaultTags,
+  },
+);
+
+// --- NixOS AMI Lookup ---
+
+const ami = aws.ec2.getAmiOutput({
+  owners: ["427812963091"],
+  filters: [
+    { name: "architecture", values: ["arm64"] },
+    { name: "name", values: ["NixOS-*"] },
+  ],
+  mostRecent: true,
+});
+
+// --- EC2 Instance ---
+
+const instance = new aws.ec2.Instance(
+  "dagafonov-remote-dev",
+  {
+    ami: ami.id,
+    instanceType,
+    subnetId: subnet.id,
+    vpcSecurityGroupIds: [sg.id],
+    iamInstanceProfile: instanceProfile.name,
+    rootBlockDevice: {
+      volumeSize,
+      volumeType: "gp3",
+      deleteOnTermination: true,
+      tags: { ...defaultTags, Name: "dagafonov-remote-dev-volume" },
+    },
+    tags: { ...defaultTags, Name: "dagafonov-remote-dev" },
+  },
+  { ignoreChanges: ["ami"] },
+);
+
+// --- Outputs ---
+
+export const instanceId = instance.id;
+export const publicIp = instance.publicIp;
+export const amiId = ami.id;
