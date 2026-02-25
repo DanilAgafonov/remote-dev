@@ -5,6 +5,7 @@ const config = new pulumi.Config();
 const instanceType = config.get("instanceType") ?? "m8g.xlarge";
 const volumeSize = config.getNumber("volumeSize") ?? 100;
 
+// Prevents team cleanup automation from deleting resources.
 const defaultTags: Record<string, string> = {
   "do-not-nuke": "true",
 };
@@ -15,11 +16,13 @@ const vpc = new aws.ec2.Vpc("dagafonov-remote-dev-vpc", {
   cidrBlock: "10.0.0.0/16",
   enableDnsSupport: true,
   enableDnsHostnames: true,
+  // Name tag is displayed in the AWS Console.
   tags: { ...defaultTags, Name: "dagafonov-remote-dev-vpc" },
 });
 
 const igw = new aws.ec2.InternetGateway("dagafonov-remote-dev-igw", {
   vpcId: vpc.id,
+  // Name tag is displayed in the AWS Console.
   tags: { ...defaultTags, Name: "dagafonov-remote-dev-igw" },
 });
 
@@ -27,12 +30,14 @@ const subnet = new aws.ec2.Subnet("dagafonov-remote-dev-subnet", {
   vpcId: vpc.id,
   cidrBlock: "10.0.1.0/24",
   mapPublicIpOnLaunch: true,
+  // Name tag is displayed in the AWS Console.
   tags: { ...defaultTags, Name: "dagafonov-remote-dev-subnet" },
 });
 
 const routeTable = new aws.ec2.RouteTable("dagafonov-remote-dev-rt", {
   vpcId: vpc.id,
   routes: [{ cidrBlock: "0.0.0.0/0", gatewayId: igw.id }],
+  // Name tag is displayed in the AWS Console.
   tags: { ...defaultTags, Name: "dagafonov-remote-dev-rt" },
 });
 
@@ -54,6 +59,7 @@ const sg = new aws.ec2.SecurityGroup("dagafonov-remote-dev-sg", {
       cidrBlocks: ["0.0.0.0/0"],
     },
   ],
+  // Name tag is displayed in the AWS Console.
   tags: { ...defaultTags, Name: "dagafonov-remote-dev-sg" },
 });
 
@@ -111,8 +117,10 @@ const instance = new aws.ec2.Instance(
       volumeSize,
       volumeType: "gp3",
       deleteOnTermination: true,
+      // Name tag is displayed in the AWS Console.
       tags: { ...defaultTags, Name: "dagafonov-remote-dev-volume" },
     },
+    // Name tag is displayed in the AWS Console.
     tags: { ...defaultTags, Name: "dagafonov-remote-dev" },
   },
   { ignoreChanges: ["ami"] },
