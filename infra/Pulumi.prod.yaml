@@ -1,0 +1,4 @@
+config:
+  aws:region: us-west-2
+  remote-dev-infra:instanceType: m8g.xlarge
+  remote-dev-infra:volumeSize: "100"
