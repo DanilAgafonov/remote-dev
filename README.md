@@ -6,7 +6,7 @@ AWS infrastructure via Pulumi, machine configuration via NixOS + home-manager.
 ## Prerequisites
 
 - AWS CLI v2 with SSM Session Manager plugin
-- Pulumi CLI
+- [mise](https://mise.jdx.dev/) (manages Pulumi version, see `mise.toml`)
 - pnpm
 - AWS profile `dil-team-eevee/SandboxAdministratorAccess` configured
 
@@ -35,19 +35,39 @@ aws s3api put-bucket-tagging \
   --profile dil-team-eevee/SandboxAdministratorAccess
 ```
 
-### 2. Deploy infrastructure
+### 2. Create KMS key for Pulumi secrets encryption
+
+```bash
+aws kms create-key \
+  --description "Pulumi secrets encryption for remote-dev" \
+  --tags TagKey=do-not-nuke,TagValue=true \
+  --region us-west-2 \
+  --profile dil-team-eevee/SandboxAdministratorAccess
+```
+
+Note the `KeyId` from the output, then create an alias:
+
+```bash
+aws kms create-alias \
+  --alias-name alias/dagafonov-remote-dev-pulumi \
+  --target-key-id <key-id> \
+  --region us-west-2 \
+  --profile dil-team-eevee/SandboxAdministratorAccess
+```
+
+### 3. Deploy infrastructure
 
 ```bash
 cd infra
 pnpm install
-pulumi login s3://dagafonov-remote-dev-pulumi-state --region us-west-2
-pulumi stack init prod
+pulumi login s3://dagafonov-remote-dev-pulumi-state
+pulumi stack init prod --secrets-provider="awskms://alias/dagafonov-remote-dev-pulumi?region=us-west-2"
 pulumi up
 ```
 
 Note the `instanceId` output -- you'll need it for SSM.
 
-### 3. First-time NixOS setup
+### 4. First-time NixOS setup
 
 SSM into the instance:
 
