@@ -2,3 +2,5 @@ config:
   aws:region: us-west-2
   remote-dev-infra:instanceType: m8g.xlarge
   remote-dev-infra:volumeSize: "100"
+secretsprovider: awskms://alias/dagafonov-remote-dev-pulumi?region=us-west-2
+encryptedkey: AQICAHj/ifr/2UxAQGObqWOikh7oGFWIQ0tiVQiJV5SOad3NqAG8Xmq5pGkXawvWxLG9OW6hAAAAfjB8BgkqhkiG9w0BBwagbzBtAgEAMGgGCSqGSIb3DQEHATAeBglghkgBZQMEAS4wEQQMBlosrspUYn5xpQmRAgEQgDv3fEQL1imNpz5EUWcDQfN9wLZBe1RUuThKSlXmL4VYrOS9W1vwZApDizwEn/dCncgUIukCbT45QGdukw==

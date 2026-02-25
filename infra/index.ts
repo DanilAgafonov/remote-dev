@@ -116,6 +116,7 @@ const instance = new aws.ec2.Instance(
     rootBlockDevice: {
       volumeSize,
       volumeType: "gp3",
+      encrypted: true,
       deleteOnTermination: true,
       // Name tag is displayed in the AWS Console.
       tags: { ...defaultTags, Name: "dagafonov-remote-dev-volume" },
