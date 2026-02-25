@@ -7,8 +7,6 @@ const volumeSize = config.getNumber("volumeSize") ?? 100;
 
 const defaultTags: Record<string, string> = {
   "do-not-nuke": "true",
-  Project: "remote-dev",
-  Owner: "dagafonov",
 };
 
 // --- VPC + Networking ---

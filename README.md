@@ -30,7 +30,7 @@ aws s3api put-bucket-versioning \
 ```bash
 aws s3api put-bucket-tagging \
   --bucket dagafonov-remote-dev-pulumi-state \
-  --tagging 'TagSet=[{Key=do-not-nuke,Value=true},{Key=Owner,Value=dagafonov},{Key=Project,Value=remote-dev}]' \
+  --tagging 'TagSet=[{Key=do-not-nuke,Value=true}]' \
   --region us-west-2 \
   --profile dil-team-eevee/SandboxAdministratorAccess
 ```
