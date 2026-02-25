@@ -1,0 +1,18 @@
+{
+  "name": "remote-dev-infra",
+  "version": "1.0.0",
+  "description": "Pulumi infrastructure for remote dev environment",
+  "type": "module",
+  "main": "index.ts",
+  "scripts": {
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@tsconfig/strictest": "^2",
+    "typescript": "^5"
+  },
+  "dependencies": {
+    "@pulumi/aws": "^6",
+    "@pulumi/pulumi": "^3"
+  }
+}

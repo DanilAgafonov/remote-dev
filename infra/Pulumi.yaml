@@ -1,0 +1,6 @@
+name: remote-dev-infra
+runtime:
+  name: nodejs
+  options:
+    typescript: true
+description: AWS infrastructure for dagafonov remote dev environment
