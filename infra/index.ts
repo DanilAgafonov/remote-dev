@@ -121,7 +121,13 @@ const instance = new aws.ec2.Instance(
       tags: { ...defaultTags, Name: "dagafonov-remote-dev-volume" },
     },
     // Name tag is displayed in the AWS Console. Matches NixOS networking.hostName.
-    tags: { ...defaultTags, Name: "dagafonov-remote-dev-machine" },
+    // Team and Explanation tags are required by the org SCP for non-small instance types.
+    tags: {
+      ...defaultTags,
+      Name: "dagafonov-remote-dev-machine",
+      Team: "rd-team-espeon",
+      Explanation: "Personal remote dev environment for Danil Agafonov",
+    },
   },
   { ignoreChanges: ["ami"] },
 );
