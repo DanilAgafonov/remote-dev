@@ -120,8 +120,8 @@ const instance = new aws.ec2.Instance(
       // Name tag is displayed in the AWS Console.
       tags: { ...defaultTags, Name: "dagafonov-remote-dev-volume" },
     },
-    // Name tag is displayed in the AWS Console.
-    tags: { ...defaultTags, Name: "dagafonov-remote-dev" },
+    // Name tag is displayed in the AWS Console. Matches NixOS networking.hostName.
+    tags: { ...defaultTags, Name: "dagafonov-remote-dev-machine" },
   },
   { ignoreChanges: ["ami"] },
 );
