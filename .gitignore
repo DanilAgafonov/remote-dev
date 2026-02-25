@@ -1,0 +1,12 @@
+# Node / Pulumi
+node_modules/
+infra/node_modules/
+
+# Pulumi
+infra/.pulumi/
+
+# Nix
+nixos/result
+
+# OS
+.DS_Store
