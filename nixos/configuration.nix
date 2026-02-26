@@ -5,6 +5,9 @@
     "${modulesPath}/virtualisation/amazon-image.nix"
   ];
 
+  # Preserve EFI boot config from stock AMI.
+  ec2.efi = true;
+
   networking.hostName = "dagafonov-remote-dev-machine";
 
   # SSM agent — enabled by default in amazon-image.nix, made explicit here
