@@ -17,6 +17,18 @@
 
   programs.git = {
     enable = true;
+    signing = {
+      format = "ssh";
+      key = "~/.ssh/id_ed25519.pub";
+      signByDefault = true;
+    };
+    settings = {
+      user = {
+        name = "Danil Agafonov";
+        email = "dagafonov@diligent.com";
+      };
+      init.defaultBranch = "main";
+    };
   };
 
   programs.zsh = {
