@@ -38,7 +38,7 @@
 
   # Locale and timezone
   time.timeZone = "America/Vancouver";
-  i18n.defaultLocale = "en_US.UTF-8";
+  i18n.defaultLocale = "en_CA.UTF-8";
 
   # Firewall — no inbound, all outbound
   networking.firewall = {
