@@ -89,7 +89,13 @@ Clone the repo as your user (user was created by nixos-rebuild above):
 sudo -u dagafonov git clone https://github.com/DanilAgafonov/remote-dev.git /home/dagafonov/remote-dev
 ```
 
-Switch to your user and apply home-manager configuration:
+Reboot to apply hostname and other system-level changes:
+
+```bash
+sudo reboot
+```
+
+Reconnect, switch to your user, and apply home-manager configuration:
 
 ```bash
 sudo su - dagafonov
