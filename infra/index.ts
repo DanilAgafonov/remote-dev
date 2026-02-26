@@ -133,6 +133,23 @@ const instance = new aws.ec2.Instance(
   { ignoreChanges: ["ami"] },
 );
 
+// --- SSM Session Document ---
+
+new aws.ssm.Document("dagafonov-remote-dev-session", {
+  name: "dagafonov-remote-dev-session",
+  documentType: "Session",
+  content: JSON.stringify({
+    schemaVersion: "1.0",
+    description: "SSM session as dagafonov",
+    sessionType: "Standard_Stream",
+    inputs: {
+      runAsEnabled: true,
+      runAsDefaultUser: "dagafonov",
+    },
+  }),
+  tags: defaultTags,
+});
+
 // --- Outputs ---
 
 export const instanceId = instance.id;
