@@ -69,12 +69,12 @@
     };
   };
 
-  programs.zellij = {
+  programs.starship = {
     enable = true;
-    enableZshIntegration = false;
+    enableZshIntegration = true;
   };
 
-  programs.starship = {
+  programs.zellij = {
     enable = true;
     enableZshIntegration = true;
   };
