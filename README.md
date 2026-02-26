@@ -77,23 +77,16 @@ aws ssm start-session --target <instance-id> \
   --region us-west-2
 ```
 
-**IMPORTANT:** Read stock NixOS config BEFORE applying your own.
-Verify your flake's configuration.nix covers everything important:
+Apply NixOS system configuration directly from GitHub (no local clone needed):
 
 ```bash
-cat /etc/nixos/configuration.nix
+sudo nixos-rebuild switch --flake github:DanilAgafonov/remote-dev?dir=nixos#dagafonov-remote-dev-machine
 ```
 
-Clone this repo:
+Clone the repo as your user (user was created by nixos-rebuild above):
 
 ```bash
-git clone https://github.com/DanilAgafonov/remote-dev.git ~/remote-dev
-```
-
-Apply NixOS system configuration (first time needs explicit config name):
-
-```bash
-sudo nixos-rebuild switch --flake ~/remote-dev/nixos#dagafonov-remote-dev-machine
+sudo -u dagafonov git clone https://github.com/DanilAgafonov/remote-dev.git /home/dagafonov/remote-dev
 ```
 
 Switch to your user and apply home-manager configuration:
@@ -130,7 +123,7 @@ git add -A && git commit -m "..." && git push
 ```bash
 aws ssm send-command --instance-id <instance-id> \
   --document-name "AWS-RunShellScript" \
-  --parameters 'commands=["cd /home/dagafonov/remote-dev && git pull && sudo nixos-rebuild switch --flake ./nixos"]' \
+  --parameters 'commands=["cd /home/dagafonov/remote-dev && sudo -u dagafonov git pull && sudo nixos-rebuild switch --flake ./nixos"]' \
   --profile dil-team-eevee/SandboxAdministratorAccess \
   --region us-west-2
 ```
