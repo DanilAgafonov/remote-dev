@@ -10,9 +10,6 @@
 
   home.packages = with pkgs; [
     claude-code
-    zellij
-    granted
-    awscli2
   ];
 
   programs.git = {
@@ -30,6 +27,13 @@
       init.defaultBranch = "main";
     };
   };
+
+  programs.granted = {
+    enable = true;
+    enableZshIntegration = true;
+  };
+
+  programs.awscli.enable = true;
 
   programs.jq.enable = true;
 
@@ -63,6 +67,11 @@
       gprom = "git pull --rebase origin main";
       gpromi = "git pull --rebase=interactive origin main";
     };
+  };
+
+  programs.zellij = {
+    enable = true;
+    enableZshIntegration = true;
   };
 
   programs.starship = {
