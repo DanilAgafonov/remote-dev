@@ -100,10 +100,19 @@ nix run home-manager/master -- switch --flake ~/remote-dev/nixos#dagafonov
 
 ### Connect to machine
 
+Add to `~/.ssh/config`:
+
+```
+Host remote-dev
+  HostName <instance-id>
+  User dagafonov
+  ProxyCommand sh -c "aws ssm start-session --target %h --document-name AWS-StartSSHSession --parameters 'portNumber=%p' --profile dil-team-eevee/SandboxAdministratorAccess --region us-west-2"
+```
+
+Then:
+
 ```bash
-aws ssm start-session --target <instance-id> \
-  --profile dil-team-eevee/SandboxAdministratorAccess \
-  --region us-west-2
+ssh remote-dev
 ```
 
 ### Reconnect to zellij session
