@@ -26,6 +26,10 @@
     ];
   };
 
+  environment.systemPackages = with pkgs; [
+    git
+  ];
+
   # User account
   users.defaultUserShell = pkgs.zsh;
   users.users.dagafonov = {
