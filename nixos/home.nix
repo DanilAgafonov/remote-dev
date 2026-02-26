@@ -35,6 +35,8 @@
 
   programs.awscli.enable = true;
 
+  programs.gh.enable = true;
+
   programs.jq.enable = true;
 
   programs.zsh = {
