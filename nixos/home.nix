@@ -35,6 +35,12 @@
 
   programs.awscli.enable = true;
 
+  programs.direnv = {
+    enable = true;
+    enableZshIntegration = true;
+    nix-direnv.enable = true;
+  };
+
   programs.gh.enable = true;
 
   programs.jq.enable = true;
