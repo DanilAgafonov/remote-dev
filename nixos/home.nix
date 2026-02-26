@@ -77,6 +77,7 @@
   programs.zellij = {
     enable = true;
     enableZshIntegration = true;
+    attachExistingSession = true;
   };
 
   home.file.".claude/settings.json".text = builtins.toJSON {
