@@ -78,6 +78,7 @@
     enable = true;
     enableZshIntegration = true;
     attachExistingSession = true;
+    exitShellOnExit = true;
   };
 
   home.file.".claude/settings.json".text = builtins.toJSON {
