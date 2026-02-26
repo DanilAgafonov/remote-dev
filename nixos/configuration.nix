@@ -47,7 +47,4 @@
     allowedUDPPorts = [ ];
   };
 
-  # Match the NixOS version of the AMI used for first install.
-  # Do NOT change this after deployment — it controls backwards compatibility.
-  system.stateVersion = "24.11";
 }

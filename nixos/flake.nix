@@ -14,19 +14,27 @@
     };
   };
 
-  outputs = { self, nixpkgs, home-manager, claude-code, ... }: {
-    nixosConfigurations.remote-dev = nixpkgs.lib.nixosSystem {
+  outputs = { self, nixpkgs, home-manager, claude-code, ... }:
+    let
       system = "aarch64-linux";
-      modules = [
-        ./configuration.nix
-        home-manager.nixosModules.home-manager
-        {
-          nixpkgs.overlays = [ claude-code.overlays.default ];
-          home-manager.useGlobalPkgs = true;
-          home-manager.useUserPackages = true;
-          home-manager.users.dagafonov = import ./home.nix;
-        }
-      ];
+      pkgs = import nixpkgs {
+        inherit system;
+        overlays = [ claude-code.overlays.default ];
+      };
+    in
+    {
+      nixosConfigurations."dagafonov-remote-dev-machine" = nixpkgs.lib.nixosSystem {
+        inherit system;
+        modules = [
+          ./configuration.nix
+        ];
+      };
+
+      homeConfigurations."dagafonov" = home-manager.lib.homeManagerConfiguration {
+        inherit pkgs;
+        modules = [
+          ./home.nix
+        ];
+      };
     };
-  };
 }

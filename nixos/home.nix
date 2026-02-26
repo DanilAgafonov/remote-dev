@@ -24,6 +24,8 @@
     enableZshIntegration = true;
   };
 
-  # Match the NixOS version of the AMI used for first install.
-  home.stateVersion = "24.11";
+  # Makes the home-manager CLI available for standalone usage.
+  programs.home-manager.enable = true;
+
+  home.stateVersion = "25.11";
 }

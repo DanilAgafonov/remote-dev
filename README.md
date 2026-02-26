@@ -87,20 +87,20 @@ cat /etc/nixos/configuration.nix
 Clone this repo:
 
 ```bash
-git clone <repo-url> ~/remote-dev
+git clone https://github.com/DanilAgafonov/remote-dev.git ~/remote-dev
 ```
 
-Apply NixOS configuration:
+Apply NixOS system configuration (first time needs explicit config name):
 
 ```bash
-cd ~/remote-dev
-sudo nixos-rebuild switch --flake ./nixos#remote-dev
+sudo nixos-rebuild switch --flake ~/remote-dev/nixos#dagafonov-remote-dev-machine
 ```
 
-Switch to your user:
+Switch to your user and apply home-manager configuration:
 
 ```bash
 sudo su - dagafonov
+nix run home-manager/master -- switch --flake ~/remote-dev/nixos#dagafonov
 ```
 
 ## Common Commands
@@ -119,7 +119,7 @@ aws ssm start-session --target <instance-id> \
 zellij attach
 ```
 
-### Apply NixOS config changes from laptop
+### Apply system config changes from laptop
 
 Edit configs locally, then:
 
@@ -130,17 +130,18 @@ git add -A && git commit -m "..." && git push
 ```bash
 aws ssm send-command --instance-id <instance-id> \
   --document-name "AWS-RunShellScript" \
-  --parameters 'commands=["cd /home/dagafonov/remote-dev && git pull && sudo nixos-rebuild switch --flake ./nixos#remote-dev"]' \
+  --parameters 'commands=["cd /home/dagafonov/remote-dev && git pull && sudo nixos-rebuild switch --flake ./nixos"]' \
   --profile dil-team-eevee/SandboxAdministratorAccess \
   --region us-west-2
 ```
 
-### Apply NixOS config changes from machine
+### Apply config changes from machine
 
 ```bash
 cd ~/remote-dev
 # edit configs...
-sudo nixos-rebuild switch --flake ./nixos#remote-dev
+sudo nixos-rebuild switch --flake ./nixos
+home-manager switch --flake ./nixos#dagafonov
 git add -A && git commit -m "..." && git push
 ```
 
