@@ -27,10 +27,10 @@
   };
 
   # User account
+  users.defaultUserShell = pkgs.zsh;
   users.users.dagafonov = {
     isNormalUser = true;
     extraGroups = [ "wheel" ];
-    shell = pkgs.zsh;
   };
 
   # zsh must be enabled at system level for it to be a valid login shell
