@@ -84,6 +84,38 @@ new aws.iam.RolePolicyAttachment("dagafonov-remote-dev-ssm-policy", {
   policyArn: "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore",
 });
 
+new aws.iam.RolePolicy("dagafonov-remote-dev-bedrock-policy", {
+  role: role.name,
+  policy: JSON.stringify({
+    Version: "2012-10-17",
+    Statement: [
+      {
+        Effect: "Allow",
+        Action: [
+          "bedrock:InvokeModel",
+          "bedrock:InvokeModelWithResponseStream",
+          "bedrock:ListInferenceProfiles",
+        ],
+        Resource: [
+          "arn:aws:bedrock:*:*:inference-profile/*",
+          "arn:aws:bedrock:*:*:application-inference-profile/*",
+          "arn:aws:bedrock:*:*:foundation-model/*",
+        ],
+      },
+      {
+        Effect: "Allow",
+        Action: "aws-marketplace:ViewSubscriptions",
+        Resource: "*",
+        Condition: {
+          StringEquals: {
+            "aws:CalledViaLast": "bedrock.amazonaws.com",
+          },
+        },
+      },
+    ],
+  }),
+});
+
 const instanceProfile = new aws.iam.InstanceProfile(
   "dagafonov-remote-dev-instance-profile",
   {
