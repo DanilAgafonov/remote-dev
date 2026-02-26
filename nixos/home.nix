@@ -98,6 +98,7 @@
     skipDangerousModePermissionPrompt = true;
     enabledPlugins = {
       "superpowers@claude-plugins-official" = true;
+      "atlassian@claude-plugins-official" = true;
     };
   };
 
