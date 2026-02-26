@@ -127,7 +127,7 @@ ssh remote-dev
 zellij attach
 ```
 
-### Apply system config changes from laptop
+### Apply config changes from laptop
 
 Edit configs locally, then:
 
@@ -135,12 +135,32 @@ Edit configs locally, then:
 git add -A && git commit -m "..." && git push
 ```
 
+System config (`configuration.nix`):
+
 ```bash
+# Via SSM
 aws ssm send-command --instance-id <instance-id> \
   --document-name "AWS-RunShellScript" \
   --parameters 'commands=["cd /home/dagafonov/remote-dev && sudo -u dagafonov git pull && sudo nixos-rebuild switch --flake ./nixos"]' \
   --profile dil-team-eevee/SandboxAdministratorAccess \
   --region us-west-2
+
+# Via SSH
+ssh remote-dev "cd ~/remote-dev && git pull && sudo nixos-rebuild switch --flake ./nixos"
+```
+
+Home-manager config (`home.nix`):
+
+```bash
+# Via SSM
+aws ssm send-command --instance-id <instance-id> \
+  --document-name "AWS-RunShellScript" \
+  --parameters 'commands=["cd /home/dagafonov/remote-dev && sudo -u dagafonov git pull && sudo -u dagafonov home-manager switch --flake ./nixos#dagafonov"]' \
+  --profile dil-team-eevee/SandboxAdministratorAccess \
+  --region us-west-2
+
+# Via SSH
+ssh remote-dev "cd ~/remote-dev && git pull && home-manager switch --flake ./nixos#dagafonov"
 ```
 
 ### Apply config changes from machine
