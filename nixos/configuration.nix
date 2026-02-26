@@ -35,6 +35,10 @@
   users.users.dagafonov = {
     isNormalUser = true;
     extraGroups = [ "wheel" ];
+    openssh.authorizedKeys.keys = [
+      "sk-ssh-ed25519@openssh.com AAAAGnNrLXNzaC1lZDI1NTE5QG9wZW5zc2guY29tAAAAIMKXvDHR/86WVK0DzdTS+cVOKbOwLHaF6nSiQA8zKNS1AAAADHNzaDpkaWxpZ2VudA== ssh:diligent"
+      "sk-ssh-ed25519@openssh.com AAAAGnNrLXNzaC1lZDI1NTE5QG9wZW5zc2guY29tAAAAIB6bK5tXatpCeMez+TDoN7IPtgJy/OdziP7OIjmmPJvQAAAADHNzaDpkaWxpZ2VudA== dagafonov@DILKL911QGK4M"
+    ];
   };
 
   # zsh must be enabled at system level for it to be a valid login shell
