@@ -31,8 +31,38 @@
     };
   };
 
+  programs.jq.enable = true;
+
   programs.zsh = {
     enable = true;
+    enableCompletion = true;
+    autosuggestion.enable = true;
+    syntaxHighlighting.enable = true;
+    initContent = ''
+      bindkey "''${key[Up]}" up-line-or-search
+      bindkey "''${key[Down]}" down-line-or-search
+
+      take() { mkdir -p "$1" && cd "$1"; }
+    '';
+    sessionVariables = {
+      COLORTERM = "truecolor";
+    };
+    shellAliases = {
+      la = "ls -lAh";
+      grep = "grep --color";
+      gst = "git status";
+      ga = "git add";
+      gaa = "git add --all";
+      gsw = "git switch";
+      gswc = "git switch -c";
+      gco = "git checkout";
+      gp = "git push";
+      ggp = "git push origin HEAD";
+      gl = "git pull";
+      ggl = "git pull origin HEAD";
+      gprom = "git pull --rebase origin main";
+      gpromi = "git pull --rebase=interactive origin main";
+    };
   };
 
   programs.starship = {
