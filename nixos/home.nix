@@ -10,7 +10,17 @@
 
   home.packages = with pkgs; [
     claude-code
+    sops
   ];
+
+  home.activation.npmrc = lib.hm.dag.entryAfter ["writeBoundary"] ''
+    TOKEN=$(run ${pkgs.sops}/bin/sops --decrypt --extract '["github_packages_token"]' ${./secrets.yaml})
+    run install -m 600 /dev/stdin $HOME/.npmrc << EOF
+    @acl-services:registry=https://npm.pkg.github.com
+    @diligentcorp:registry=https://npm.pkg.github.com
+    //npm.pkg.github.com/:_authToken=$TOKEN
+    EOF
+  '';
 
   programs.git = {
     enable = true;

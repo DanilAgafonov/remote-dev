@@ -116,6 +116,34 @@ new aws.iam.RolePolicy("dagafonov-remote-dev-bedrock-policy", {
   }),
 });
 
+// --- KMS Key for sops secrets ---
+
+const sopsKey = new aws.kms.Key("dagafonov-remote-dev-sops-key", {
+  description: "Encrypts sops secrets for dagafonov remote dev environment",
+  tags: { ...defaultTags, Name: "dagafonov-remote-dev-sops" },
+});
+
+new aws.kms.Alias("dagafonov-remote-dev-sops-alias", {
+  name: "alias/dagafonov-remote-dev-sops",
+  targetKeyId: sopsKey.id,
+});
+
+new aws.iam.RolePolicy("dagafonov-remote-dev-kms-policy", {
+  role: role.name,
+  policy: sopsKey.arn.apply((arn) =>
+    JSON.stringify({
+      Version: "2012-10-17",
+      Statement: [
+        {
+          Effect: "Allow",
+          Action: "kms:Decrypt",
+          Resource: arn,
+        },
+      ],
+    }),
+  ),
+});
+
 const instanceProfile = new aws.iam.InstanceProfile(
   "dagafonov-remote-dev-instance-profile",
   {
@@ -170,3 +198,4 @@ const instance = new aws.ec2.Instance(
 export const instanceId = instance.id;
 export const publicIp = instance.publicIp;
 export const amiId = ami.id;
+export const sopsKeyArn = sopsKey.arn;
